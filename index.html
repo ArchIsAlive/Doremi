@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
+    <title>Archix Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -16,6 +16,10 @@
             --text-secondary: #cccccc;
             --card-bg: rgba(255, 255, 255, 0.05);
             --card-border: rgba(255, 255, 255, 0.1);
+            --online: #3ba55c;
+            --idle: #faa61a;
+            --dnd: #ed4245;
+            --offline: #747f8d;
         }
         
         * {
@@ -44,6 +48,34 @@
             z-index: -2;
         }
         
+        /* Rain Effect */
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .drop {
+            position: absolute;
+            width: 1px;
+            height: 30px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+            animation: rain linear infinite;
+        }
+        
+        @keyframes rain {
+            0% {
+                transform: translateY(-100vh);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -53,12 +85,15 @@
             align-items: center;
             min-height: 100vh;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 1.5s ease forwards;
+            animation: fadeInSlideUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         
-        @keyframes fadeIn {
-            to {
+        @keyframes fadeInSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -80,6 +115,7 @@
             cursor: move;
             user-select: none;
             transition: all 0.3s ease;
+            animation: fadeInSlideUp 1s 0.5s both;
         }
         
         .music-player:hover {
@@ -137,6 +173,11 @@
             height: 50px;
             border-radius: 5px;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .song-thumbnail:hover {
+            transform: scale(1.05);
         }
         
         .song-details {
@@ -207,43 +248,7 @@
             cursor: pointer;
         }
         
-        .player-footer {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .url-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            padding: 5px 10px;
-            color: var(--primary);
-            font-size: 0.8rem;
-            outline: none;
-        }
-        
-        .url-input::placeholder {
-            color: var(--text-secondary);
-        }
-        
-        .load-btn {
-            background-color: var(--accent);
-            color: var(--primary);
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .load-btn:hover {
-            background-color: #4752c4;
-        }
-        
-        /* Rest of your existing styles... */
+        /* Profile Section */
         .profile-section {
             display: flex;
             flex-direction: column;
@@ -251,6 +256,7 @@
             margin-bottom: 3rem;
             text-align: center;
             width: 100%;
+            animation: fadeInSlideUp 1s 0.2s both;
         }
         
         .profile-pic {
@@ -262,25 +268,13 @@
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
             margin-bottom: 1.5rem;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: glow 3s infinite alternate;
             position: relative;
             z-index: 1;
         }
         
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 0 45px rgba(255, 255, 255, 0.5);
-            }
-            100% {
-                box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-            }
-        }
-        
         .profile-pic:hover {
             transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
         }
         
         h1 {
@@ -299,11 +293,10 @@
             font-size: 1.3rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.5s forwards;
             font-weight: 300;
             max-width: 600px;
             line-height: 1.6;
+            animation: fadeInSlideUp 1s 0.4s both;
         }
         
         .social-buttons {
@@ -312,9 +305,8 @@
             margin-bottom: 3rem;
             flex-wrap: wrap;
             justify-content: center;
-            opacity: 0;
-            animation: fadeIn 1s ease 1s forwards;
             width: 100%;
+            animation: fadeInSlideUp 1s 0.6s both;
         }
         
         .social-btn {
@@ -361,22 +353,23 @@
         .tiktok { color: #25F4EE; }
         .discord { color: var(--accent); }
         
+        /* About Section */
         .about-section {
             background-color: var(--card-bg);
             padding: 2.5rem;
             border-radius: 20px;
             margin-bottom: 3rem;
             max-width: 800px;
-            opacity: 0;
-            animation: fadeIn 1s ease 1.5s forwards;
             backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             width: 100%;
             transition: transform 0.4s ease;
+            animation: fadeInSlideUp 1s 0.8s both;
         }
         
         .about-section:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .about-section h2 {
@@ -395,6 +388,7 @@
             font-size: 1.1rem;
         }
         
+        /* Discord Profile */
         .discord-profile {
             background-color: var(--card-bg);
             padding: 1.8rem;
@@ -403,17 +397,17 @@
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 3rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 2s forwards;
             backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             width: 100%;
             max-width: 500px;
             transition: transform 0.4s ease;
+            animation: fadeInSlideUp 1s 1s both;
         }
         
         .discord-profile:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .discord-avatar {
@@ -452,6 +446,40 @@
             color: var(--accent);
         }
         
+        .discord-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status-online {
+            background-color: var(--online);
+            box-shadow: 0 0 10px var(--online);
+        }
+        
+        .status-idle {
+            background-color: var(--idle);
+            box-shadow: 0 0 10px var(--idle);
+        }
+        
+        .status-dnd {
+            background-color: var(--dnd);
+            box-shadow: 0 0 10px var(--dnd);
+        }
+        
+        .status-offline {
+            background-color: var(--offline);
+            box-shadow: 0 0 10px var(--offline);
+        }
+        
+        /* GitHub Updates */
         .github-updates {
             background-color: var(--card-bg);
             padding: 2rem;
@@ -459,15 +487,15 @@
             margin-bottom: 3rem;
             width: 100%;
             max-width: 800px;
-            opacity: 0;
-            animation: fadeIn 1s ease 2.5s forwards;
             backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             transition: transform 0.4s ease;
+            animation: fadeInSlideUp 1s 1.2s both;
         }
         
         .github-updates:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .github-updates h2 {
@@ -524,15 +552,15 @@
             font-weight: 300;
         }
         
+        /* Footer */
         footer {
             margin-top: auto;
             padding: 1.5rem;
             text-align: center;
             color: var(--text-secondary);
             font-size: 0.9rem;
-            opacity: 0;
-            animation: fadeIn 1s ease 3s forwards;
             width: 100%;
+            animation: fadeInSlideUp 1s 1.4s both;
         }
         
         /* Floating animation for decorative elements */
@@ -642,7 +670,7 @@
                 padding: 1.5rem;
             }
             
-            .discord-tag {
+            .discord-tag, .discord-status {
                 justify-content: center;
             }
             
@@ -655,6 +683,9 @@
     </style>
 </head>
 <body>
+    <!-- Rain Effect -->
+    <div class="rain" id="rain"></div>
+    
     <!-- Decorative floating elements -->
     <div class="floating"></div>
     <div class="floating"></div>
@@ -743,6 +774,10 @@
                     <i class="fab fa-discord"></i>
                     <p>BeliauSangatKece#7317</p>
                 </div>
+                <div class="discord-status">
+                    <div class="status-dot status-offline"></div>
+                    <p>dead</p>
+                </div>
             </div>
         </div>
         
@@ -757,7 +792,7 @@
             <div class="player-title">Music Player</div>
             <div class="player-controls">
                 <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn" id="playBtn"><i class="fas fa-play"></i></button>
+                <button class="control-btn" id="playBtn"><i class="fas fa-pause"></i></button>
                 <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
             </div>
         </div>
@@ -774,7 +809,7 @@
             </div>
             <div class="time-display">
                 <span id="currentTime">0:00</span>
-                <span id="duration">3:32</span>
+                <span id="duration">0:00</span>
             </div>
             <div class="volume-control">
                 <i class="fas fa-volume-up"></i>
@@ -786,9 +821,35 @@
     <!-- YouTube IFrame API -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        // Create rain effect
+        function createRain() {
+            const rainContainer = document.getElementById('rain');
+            const rainCount = 100;
+            
+            for (let i = 0; i < rainCount; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'drop';
+                
+                // Random properties for each raindrop
+                const left = Math.random() * 100;
+                const animationDuration = 0.5 + Math.random() * 1.5;
+                const animationDelay = Math.random() * 2;
+                const height = 20 + Math.random() * 30;
+                const opacity = 0.1 + Math.random() * 0.3;
+                
+                drop.style.left = `${left}%`;
+                drop.style.animationDuration = `${animationDuration}s`;
+                drop.style.animationDelay = `${animationDelay}s`;
+                drop.style.height = `${height}px`;
+                drop.style.opacity = opacity;
+                
+                rainContainer.appendChild(drop);
+            }
+        }
+        
         // YouTube Player
         let player;
-        let isPlaying = false;
+        let isPlaying = true; // Start with playing state
         let currentVideoId = 'I37l6C7UB5w'; // Default video (wifiskeleton)
         let playlist = [
             {id: 'I37l6C7UB5w', title: 'Nope your too late i already died', artist: 'wifiskeleton'},
@@ -848,14 +909,22 @@
             
             // Play the video
             event.target.playVideo();
-            isPlaying = true;
             document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            
+            // Create rain effect after player is ready
+            createRain();
         }
         
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
                 // Play next track when current ends
                 playNext();
+            } else if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
             }
         }
         
@@ -946,39 +1015,6 @@
             player.setVolume(e.target.value * 100);
         });
         
-        // Load YouTube URL
-        document.getElementById('loadBtn').addEventListener('click', loadFromUrl);
-        document.getElementById('youtubeUrl').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') loadFromUrl();
-        });
-        
-        function loadFromUrl() {
-            const urlInput = document.getElementById('youtubeUrl').value.trim();
-            if (!urlInput) return;
-            
-            // Extract video ID from URL
-            let videoId = '';
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = urlInput.match(regExp);
-            
-            if (match && match[2].length === 11) {
-                videoId = match[2];
-                loadVideo(videoId);
-                
-                // For demo purposes, we'll just show the video ID as title
-                updatePlayerInfo('Custom Video', 'From YouTube');
-                
-                if (isPlaying) {
-                    player.playVideo();
-                }
-                
-                // Clear input
-                document.getElementById('youtubeUrl').value = '';
-            } else {
-                alert('Please enter a valid YouTube URL');
-            }
-        }
-        
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Add hover effect to profile picture
@@ -991,7 +1027,7 @@
                 this.style.transform = 'scale(1) rotate(0deg)';
             });
             
-            // Add pulse animation to social buttons periodically
+            // Random button animation
             setInterval(() => {
                 const buttons = document.querySelectorAll('.social-btn');
                 const randomBtn = buttons[Math.floor(Math.random() * buttons.length)];
@@ -1001,7 +1037,7 @@
                 }, 500);
             }, 3000);
             
-            // Make GitHub update items more interactive
+            // Update item hover effects
             const updateItems = document.querySelectorAll('.update-item');
             updateItems.forEach(item => {
                 item.addEventListener('mouseenter', function() {
