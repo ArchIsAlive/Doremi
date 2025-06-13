@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #ffffff;
+            --secondary: #000000;
+            --accent: #5865F2;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(0,0,0,1) 70%);
+            z-index: -2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Music Player Styles */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        .music-player:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .player-title {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+        
+        .player-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .song-thumbnail {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        
+        .song-details {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .song-title {
+            font-size: 0.9rem;
+            color: var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .song-artist {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .player-footer {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .url-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: var(--primary);
+            font-size: 0.8rem;
+            outline: none;
+        }
+        
+        .url-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .load-btn {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .load-btn:hover {
+            background-color: #4752c4;
+        }
+        
+        /* Rest of your existing styles... */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 3rem;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .profile-pic {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+            margin-bottom: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: glow 3s infinite alternate;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 0 45px rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            }
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.08) rotate(2deg);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), #aaaaaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+            font-weight: 300;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+            width: 100%;
+        }
+        
+        .social-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.1);
+            font-size: 1.6rem;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+        }
+        
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .social-btn:hover::before {
+            left: 100%;
+        }
+        
+        .youtube { color: #ff0000; }
+        .github { color: var(--primary); }
+        .tiktok { color: #25F4EE; }
+        .discord { color: var(--accent); }
+        
+        .about-section {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            width: 100%;
+            transition: transform 0.4s ease;
+        }
+        
+        .about-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .about-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .about-section p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: center;
+            font-weight: 300;
+            font-size: 1.1rem;
+        }
+        
+        .discord-profile {
+            background-color: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.4s ease;
+        }
+        
+        .discord-profile:hover {
+            transform: translateY(-5px);
+        }
+        
+        .discord-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transition: transform 0.4s ease;
+        }
+        
+        .discord-avatar:hover {
+            transform: rotate(10deg) scale(1.05);
+        }
+        
+        .discord-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .discord-info p {
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+        
+        .discord-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+        
+        .discord-tag i {
+            color: var(--accent);
+        }
+        
+        .github-updates {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            width: 100%;
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.5s forwards;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            transition: transform 0.4s ease;
+        }
+        
+        .github-updates:hover {
+            transform: translateY(-5px);
+        }
+        
+        .github-updates h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .update-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .update-item {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 1.2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .update-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-left: 3px solid var(--accent);
+            transform: translateX(5px);
+        }
+        
+        .update-item a {
+            text-decoration: none;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 400;
+        }
+        
+        .update-item i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .update-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .update-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+        
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 3s forwards;
+            width: 100%;
+        }
+        
+        /* Floating animation for decorative elements */
+        .floating {
+            position: absolute;
+            background-color: rgba(0,0,0,0.8);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(40px);
+            opacity: 0.6;
+        }
+        
+        .floating:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+            animation: float 25s infinite linear;
+        }
+        
+        .floating:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -100px;
+            animation: float 20s infinite linear reverse;
+        }
+        
+        .floating:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            top: 30%;
+            right: -50px;
+            animation: float 18s infinite linear 2s;
+        }
+        
+        .floating:nth-child(4) {
+            width: 350px;
+            height: 350px;
+            bottom: 20%;
+            left: -150px;
+            animation: float 22s infinite linear reverse 3s;
+        }
+        
+        .floating:nth-child(5) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 10%;
+            animation: float 15s infinite linear 1s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, 100px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 200px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-100px, 100px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .profile-pic {
+                width: 180px;
+                height: 180px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .social-buttons {
+                gap: 1rem;
+            }
+            
+            .social-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+                border-radius: 15px;
+            }
+            
+            .about-section, .github-updates {
+                padding: 1.5rem;
+            }
+            
+            .discord-profile {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            
+            .discord-tag {
+                justify-content: center;
+            }
+            
+            .music-player {
+                width: 250px;
+                right: 20px;
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative floating elements -->
+    <div class="floating"></div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+    
+    <div class="container">
+        <section class="profile-section">
+            <img src="https://cdn.discordapp.com/attachments/1330093469607395420/1383024444208971837/slow-blink-boykisser.gif?ex=684d4962&is=684bf7e2&hm=66ba6b97bf165e933125e4bf99fe584e6c96f171392e5ffc3bdb38ac476028d6&" alt="Profile Picture" class="profile-pic" id="profile-pic">
+            <h1>Archix</h1>
+            <p class="tagline">Freak | Tester | Idk</p>
+            
+            <div class="social-buttons">
+                <a href="https://youtube.com/@archthehonoredone" class="social-btn youtube" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://github.com/ArchIsAlive" class="social-btn github" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://tiktok.com/@archtheslut" class="social-btn tiktok" target="_blank">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="https://discord.com/users/1083359869341548615" class="social-btn discord" target="_blank">
+                    <i class="fab fa-discord"></i>
+                </a>
+            </div>
+        </section>
+        
+        <section class="about-section">
+            <h2>About Me</h2>
+            <p>
+                Hello! I'm a roblox player who loves to interact with people and make friends and play roblox games. 
+                im currently a Sahabat Productions Tester who creates games such as Find The Noobies, Traffic Tower. 
+                im not good at anything but i'll try to help others.
+            </p>
+        </section>
+        
+        <section class="github-updates">
+            <h2>Random Stuff</h2>
+            <ul class="update-list">
+                <li class="update-item">
+                    <a href="https://discord.gg/tbThHMXnX6" target="_blank">
+                        <i class="fas fa-caret-square-down"></i>
+                        <div>
+                            <div class="update-title">Sahabat Productions</div>
+                            <div class="update-date">Pretty Chill Roblox Community</div>
+                        </div>
+                    </a>
+                </li>
+                <li class="update-item">
+                    <a href="https://tiktok.com/@archtheslut" target="_blank">
+                        <i class="fas fa-caret-square-right"></i>
+                        <div>
+                            <div class="update-title">Tiktok!1!!1</div>
+                            <div class="update-date">idk what to put here</div>
+                        </div>
+                    </a>
+                </li>
+                <li class="update-item">
+                    <a href="https://guns.lol/archsix" target="_blank">
+                        <i class="fas fa-caret-square-right"></i>
+                        <div>
+                            <div class="update-title">My guns.lol Profile</div>
+                            <div class="update-date">meh i dont really care abt it</div>
+                        </div>
+                    </a>
+                </li>
+                <li class="update-item">
+                    <a href="https://www.roblox.com/users/3532024703/profile" target="_blank">
+                        <i class="fas fa-caret-square-up"></i>
+                        <div>
+                            <div class="update-title">My Roblox Account</div>
+                            <div class="update-date">follow me pls :3</div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        
+        <div class="discord-profile">
+            <img src="https://cdn.discordapp.com/attachments/1330093469607395420/1383024444208971837/slow-blink-boykisser.gif?ex=684d4962&is=684bf7e2&hm=66ba6b97bf165e933125e4bf99fe584e6c96f171392e5ffc3bdb38ac476028d6&" alt="Discord Avatar" class="discord-avatar">
+            <div class="discord-info">
+                <h3>Destroy()</h3>
+                <div class="discord-tag">
+                    <i class="fab fa-discord"></i>
+                    <p>BeliauSangatKece#7317</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2023 Your Name. All rights reserved.
+        </footer>
+    </div>
+    
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <div class="player-header">
+            <div class="player-title">Music Player</div>
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn" id="playBtn"><i class="fas fa-play"></i></button>
+                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            </div>
+        </div>
+        <div class="player-body">
+            <div class="song-info">
+                <img src="https://cdn.discordapp.com/attachments/1330093469607395420/1383044560610922679/images_43.jpg?ex=684d5c1e&is=684c0a9e&hm=c7126b233b848d00589bc3ebe8fb06288e5e3d59cc6c9d60f26172f78d81719d&" alt="Song thumbnail" class="song-thumbnail" id="songThumb">
+                <div class="song-details">
+                    <div class="song-title" id="songTitle">wifiskeleton - Nope your too late i already died</div>
+                    <div class="song-artist" id="songArtist">wifiskeleton</div>
+                </div>
+            </div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="duration">3:32</span>
+            </div>
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+            </div>
+        </div>
+    </div>
+    
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // YouTube Player
+        let player;
+        let isPlaying = false;
+        let currentVideoId = 'I37l6C7UB5w'; // Default video (wifiskeleton)
+        let playlist = [
+            {id: 'I37l6C7UB5w', title: 'Nope your too late i already died', artist: 'wifiskeleton'},
+            {id: 'mGmDnRvO8TE', title: 'i can see clearly', artist: 'LIL DARKIE'},
+            {id: 'yY8dxBvRwoQ', title: 'Nuts', artist: 'Lil Peep'}
+        ];
+        let currentTrack = 0;
+        
+        // Draggable music player
+        const musicPlayer = document.getElementById('musicPlayer');
+        let isDragging = false;
+        let offsetX, offsetY;
+        
+        musicPlayer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - musicPlayer.getBoundingClientRect().left;
+            offsetY = e.clientY - musicPlayer.getBoundingClientRect().top;
+            musicPlayer.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            
+            musicPlayer.style.left = `${x}px`;
+            musicPlayer.style.top = `${y}px`;
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            musicPlayer.style.cursor = 'move';
+        });
+        
+        // Initialize YouTube Player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        function onPlayerReady(event) {
+            // Player is ready, start playing the default track
+            loadVideo(playlist[currentTrack].id);
+            updatePlayerInfo(playlist[currentTrack].title, playlist[currentTrack].artist);
+            updateProgressBar();
+            
+            // Set volume
+            const volumeSlider = document.getElementById('volumeSlider');
+            player.setVolume(volumeSlider.value * 100);
+            
+            // Play the video
+            event.target.playVideo();
+            isPlaying = true;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+        }
+        
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                // Play next track when current ends
+                playNext();
+            }
+        }
+        
+        function loadVideo(videoId) {
+            currentVideoId = videoId;
+            player.loadVideoById(videoId);
+            
+            // Update thumbnail
+            document.getElementById('songThumb').src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+        }
+        
+        function updatePlayerInfo(title, artist) {
+            document.getElementById('songTitle').textContent = title;
+            document.getElementById('songArtist').textContent = artist;
+        }
+        
+        function updateProgressBar() {
+            if (!player || !player.getCurrentTime) return;
+            
+            const progressBar = document.getElementById('progressBar');
+            const currentTimeDisplay = document.getElementById('currentTime');
+            const durationDisplay = document.getElementById('duration');
+            
+            const currentTime = player.getCurrentTime();
+            const duration = player.getDuration();
+            
+            // Update progress bar
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            
+            // Update time displays
+            currentTimeDisplay.textContent = formatTime(currentTime);
+            durationDisplay.textContent = formatTime(duration);
+            
+            // Continue updating
+            requestAnimationFrame(updateProgressBar);
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Player controls
+        document.getElementById('playBtn').addEventListener('click', () => {
+            if (isPlaying) {
+                player.pauseVideo();
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                player.playVideo();
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', playPrevious);
+        document.getElementById('nextBtn').addEventListener('click', playNext);
+        
+        function playNext() {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            loadVideo(playlist[currentTrack].id);
+            updatePlayerInfo(playlist[currentTrack].title, playlist[currentTrack].artist);
+            if (isPlaying) player.playVideo();
+        }
+        
+        function playPrevious() {
+            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+            loadVideo(playlist[currentTrack].id);
+            updatePlayerInfo(playlist[currentTrack].title, playlist[currentTrack].artist);
+            if (isPlaying) player.playVideo();
+        }
+        
+        // Progress bar click
+        document.getElementById('progressContainer').addEventListener('click', (e) => {
+            if (!player || !player.getDuration) return;
+            
+            const progressContainer = document.getElementById('progressContainer');
+            const rect = progressContainer.getBoundingClientRect();
+            const clickPosition = (e.clientX - rect.left) / rect.width;
+            const newTime = player.getDuration() * clickPosition;
+            
+            player.seekTo(newTime);
+        });
+        
+        // Volume control
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            player.setVolume(e.target.value * 100);
+        });
+        
+        // Load YouTube URL
+        document.getElementById('loadBtn').addEventListener('click', loadFromUrl);
+        document.getElementById('youtubeUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadFromUrl();
+        });
+        
+        function loadFromUrl() {
+            const urlInput = document.getElementById('youtubeUrl').value.trim();
+            if (!urlInput) return;
+            
+            // Extract video ID from URL
+            let videoId = '';
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = urlInput.match(regExp);
+            
+            if (match && match[2].length === 11) {
+                videoId = match[2];
+                loadVideo(videoId);
+                
+                // For demo purposes, we'll just show the video ID as title
+                updatePlayerInfo('Custom Video', 'From YouTube');
+                
+                if (isPlaying) {
+                    player.playVideo();
+                }
+                
+                // Clear input
+                document.getElementById('youtubeUrl').value = '';
+            } else {
+                alert('Please enter a valid YouTube URL');
+            }
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effect to profile picture
+            const profilePic = document.getElementById('profile-pic');
+            profilePic.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.08) rotate(5deg)';
+            });
+            
+            profilePic.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            });
+            
+            // Add pulse animation to social buttons periodically
+            setInterval(() => {
+                const buttons = document.querySelectorAll('.social-btn');
+                const randomBtn = buttons[Math.floor(Math.random() * buttons.length)];
+                randomBtn.style.transform = 'translateY(-8px) scale(1.1)';
+                setTimeout(() => {
+                    randomBtn.style.transform = '';
+                }, 500);
+            }, 3000);
+            
+            // Make GitHub update items more interactive
+            const updateItems = document.querySelectorAll('.update-item');
+            updateItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+        });
+    </script>
+    
+    <!-- Hidden YouTube player -->
+    <div id="player"></div>
+</body>
+</html>
